@@ -20,7 +20,7 @@ enum Player {
   marie = "marie",
 }
 
-const initialState: any = [
+const initialState: Iterable<readonly [Player, number]> = [
   [Player.hannah, 0],
   [Player.esra, 0],
   [Player.max, 0],
@@ -60,7 +60,7 @@ for (const player in Player) {
     const currentState = state.get(player);
     state.set(player, currentState! + 1);
 
-    console.log("Updating state for player " + player + ". State minus one => " + (currentState! + 1));
+    console.log("Updating state for player " + player + ". State plus one => " + (currentState! + 1));
 
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
@@ -81,7 +81,7 @@ for (const player in Player) {
 
     state.set(player, currentState! - 1);
 
-    console.log("Updating state for player " + player + ". State plus one => " + (state.get(player)! - 1));
+    console.log("Updating state for player " + player + ". State minus one => " + (state.get(player)! - 1));
 
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
@@ -92,7 +92,7 @@ for (const player in Player) {
     const currentState = state.get(player);
     state.set(player, currentState! + 10);
 
-    console.log("Updating state for player " + player + ". State minus ten => " + (currentState! + 10));
+    console.log("Updating state for player " + player + ". State plus ten => " + (currentState! + 10));
 
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
@@ -103,21 +103,24 @@ for (const player in Player) {
     const currentState = state.get(player);
 
     // player state is bound to min zero
-    if (currentState! - 10 < 0) {
+    if (currentState! - 10 <= 0) {
       res.set("Content-Type", "text/html");
       res.send("" + 0);
       state.set(player, 0);
+
+      console.log("Can't update state for player " + player + ". State would less or equals zero, setting to 0");
+
       sendState();
       return;
+    } else {
+      state.set(player, currentState! - 10);
+
+      console.log("Updating state for player " + player + ". State minus ten => " + (state.get(player)! - 10));
+
+      res.set("Content-Type", "text/html");
+      res.send("" + state.get(player));
+      sendState();
     }
-
-    state.set(player, currentState! - 10);
-
-    console.log("Updating state for player " + player + ". State plus ten => " + (state.get(player)! - 10));
-
-    res.set("Content-Type", "text/html");
-    res.send("" + state.get(player));
-    sendState();
   });
 }
 
