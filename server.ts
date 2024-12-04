@@ -17,17 +17,75 @@ enum Player {
   marie = "marie",
 }
 
-const state: Map<string, number> = new Map([
+const initialState: any = [
   [Player.hannah, 3],
   [Player.esra, 0],
   [Player.max, 0],
   [Player.peter, 0],
   [Player.marie, 0],
-]);
+];
+
+const state: Map<string, number> = new Map(initialState);
 
 for (const player in Player) {
-  app.get(`/api/${player}`, (req, res) => {
+  app.get(`/api/${player}`, (_req, res) => {
     console.log("Requested state for player " + player + ". State is " + state.get(player));
+    res.set("Content-Type", "text/html");
+    res.send("" + state.get(player));
+  });
+
+  app.post(`/api/${player}/plus`, (_req, res) => {
+    const currentState = state.get(player);
+    state.set(player, currentState! + 1);
+
+    console.log("Updating state for player " + player + ". State minus one => " + (currentState! + 1));
+
+    res.set("Content-Type", "text/html");
+    res.send("" + state.get(player));
+  });
+
+  app.post(`/api/${player}/minus`, (_req, res) => {
+    const currentState = state.get(player);
+
+    // player state is bound to min zero
+    if (currentState && currentState <= 0) {
+      res.set("Content-Type", "text/html");
+      res.send("" + 0);
+      return;
+    }
+
+    state.set(player, currentState! - 1);
+
+    console.log("Updating state for player " + player + ". State plus one => " + (state.get(player)! - 1));
+
+    res.set("Content-Type", "text/html");
+    res.send("" + state.get(player));
+  });
+
+  app.post(`/api/${player}/plusTen`, (_req, res) => {
+    const currentState = state.get(player);
+    state.set(player, currentState! + 10);
+
+    console.log("Updating state for player " + player + ". State minus ten => " + (currentState! + 10));
+
+    res.set("Content-Type", "text/html");
+    res.send("" + state.get(player));
+  });
+
+  app.post(`/api/${player}/minusTen`, (_req, res) => {
+    const currentState = state.get(player);
+
+    // player state is bound to min zero
+    if (currentState && currentState - 10 < 0) {
+      res.set("Content-Type", "text/html");
+      res.send("" + 0);
+      return;
+    }
+
+    state.set(player, currentState! - 10);
+
+    console.log("Updating state for player " + player + ". State plus ten => " + (state.get(player)! - 10));
+
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
   });
