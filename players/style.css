@@ -7,6 +7,9 @@ body {
   font-family: officina;
   background-color: #001323;
   height: 1vh;
+  touch-action: manipulation;
+  position: fixed;
+  overflow: hidden;
 }
 
 a,
