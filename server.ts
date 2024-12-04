@@ -28,7 +28,7 @@ const initialState: Iterable<readonly [Player, number]> = [
   [Player.marie, 0],
 ];
 
-const state: Map<string, number> = new Map(initialState);
+let state: Map<string, number> = new Map(initialState);
 
 const sockets: any = [];
 
@@ -43,11 +43,18 @@ function addWS(ws: any) {
   sendState();
 }
 
-app.ws("/api/director", (ws, req) => {
+app.ws("/api/state", (ws, req) => {
   addWS(ws);
 });
 
 app.get("/", (_req, res) => res.redirect("/players"));
+
+app.get("/api/reset", (_req, res) => {
+  console.log("Received the reset command, resetting the state");
+  state = new Map(initialState);
+  res.sendStatus(200);
+  sendState();
+});
 
 for (const player in Player) {
   app.get(`/api/${player}`, (_req, res) => {
