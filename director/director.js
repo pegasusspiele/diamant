@@ -1,14 +1,14 @@
+var container = null;
+
+function renderState(state) {
+  console.log(container);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Create WebSocket connection.
+  container = document.getElementByID("container")
   const socket = new WebSocket("/api/director");
-
-  // Connection opened
-  socket.addEventListener("open", (event) => {
-    socket.send("Hello Server!");
-  });
-
-  // Listen for messages
+  socket.addEventListener("open", (event) => {});
   socket.addEventListener("message", (event) => {
-    console.log(event);
+    renderState(JSON.parse(event.data));
   });
 });
