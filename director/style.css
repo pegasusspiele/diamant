@@ -7,6 +7,7 @@ body {
   font-family: officina;
   background-color: #001323;
   height: 1vh;
+  color: white;
 }
 
 a,
@@ -58,4 +59,29 @@ button {
 
 #love {
   color: #f90716;
+}
+
+#scoreContainerRow {
+  margin-top: 30%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.scoreContainer {
+  width: 20%;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.scoreName {
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+
+.score {
+  font-size: 15rem;
 }

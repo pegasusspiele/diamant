@@ -10,6 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
   socket.addEventListener("message", (event) => {
     console.log("received state from server", JSON.parse(event.data));
     state = JSON.parse(event.data);
+
+    for (const key of Object.keys(state)) {
+      console.log(key, state[key]);
+
+      document.getElementById("score_" + key).innerText = state[key];
+    }
   });
 
   document.getElementById("resetButton").addEventListener("click", () => {
