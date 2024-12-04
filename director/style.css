@@ -1,0 +1,21 @@
+@font-face {
+  font-family: officina;
+  src: url(officina.otf);
+}
+
+body {
+  font-family: officina;
+  background-color: #001323;
+  height: 1vh;
+}
+
+#credits {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  color: white;
+}
+
+#love {
+  color: #f90716;
+}

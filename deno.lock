@@ -1,7 +1,12 @@
 {
   "version": "4",
   "specifiers": {
+    "npm:@types/express-ws@*": "3.0.5",
     "npm:@types/express@*": "5.0.0",
+    "npm:@types/node@*": "22.5.4",
+    "npm:e@*": "0.2.33",
+    "npm:express-ws@*": "5.0.2_express@4.21.1",
+    "npm:express-ws@^5.0.2": "5.0.2_express@4.21.1",
     "npm:express@*": "4.21.1",
     "npm:express@^4.21.1": "4.21.1"
   },
@@ -26,6 +31,14 @@
         "@types/qs",
         "@types/range-parser",
         "@types/send"
+      ]
+    },
+    "@types/express-ws@3.0.5": {
+      "integrity": "sha512-lbWMjoHrm/v85j81UCmb/GNZFO3genxRYBW1Ob7rjRI+zxUBR+4tcFuOpKKsYQ1LYTYiy3356epLeYi/5zxUwA==",
+      "dependencies": [
+        "@types/express",
+        "@types/express-serve-static-core",
+        "@types/ws"
       ]
     },
     "@types/express@5.0.0": {
@@ -68,6 +81,12 @@
         "@types/http-errors",
         "@types/node",
         "@types/send"
+      ]
+    },
+    "@types/ws@8.5.13": {
+      "integrity": "sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA==",
+      "dependencies": [
+        "@types/node"
       ]
     },
     "accepts@1.3.8": {
@@ -145,6 +164,9 @@
     "destroy@1.2.0": {
       "integrity": "sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg=="
     },
+    "e@0.2.33": {
+      "integrity": "sha512-anpW+L+S+xxSOg0/IdVDwcjxS6b63Cbg0EPhiUbvfr2xSQ9IB0BK+QOjj1ndn5RfnhOyM20AwTOt26xyw/BCLA=="
+    },
     "ee-first@1.1.1": {
       "integrity": "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow=="
     },
@@ -168,6 +190,13 @@
     },
     "etag@1.8.1": {
       "integrity": "sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg=="
+    },
+    "express-ws@5.0.2_express@4.21.1": {
+      "integrity": "sha512-0uvmuk61O9HXgLhGl3QhNSEtRsQevtmbL94/eILaliEADZBHZOQUAiHFrGPrgsjikohyrmSG5g+sCfASTt0lkQ==",
+      "dependencies": [
+        "express",
+        "ws"
+      ]
     },
     "express@4.21.1": {
       "integrity": "sha512-YSFlK1Ee0/GC8QaO91tHcDxJiE/X4FbpAyQWkxAvG6AXCuR65YzK8ua6D9hvi/TzUfZMpc+BwuM1IPw8fmQBiQ==",
@@ -435,10 +464,14 @@
     },
     "vary@1.1.2": {
       "integrity": "sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg=="
+    },
+    "ws@7.5.10": {
+      "integrity": "sha512-+dbF1tHwZpXcbOJdVOkzLDxZP1ailvSxM6ZweXTegylPny803bFhA+vqBYw4s31NSAk4S2Qz+AKXK9a4wkdjcQ=="
     }
   },
   "workspace": {
     "dependencies": [
+      "npm:express-ws@^5.0.2",
       "npm:express@^4.21.1"
     ]
   }

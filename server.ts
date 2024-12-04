@@ -6,8 +6,11 @@
 
 // @deno-types="npm:@types/express"
 import express from "npm:express";
-
 const app = express();
+
+// @deno-types="npm:@types/express-ws"
+import expressWs from "npm:express-ws";
+expressWs(app);
 
 enum Player {
   hannah = "hannah",
@@ -27,6 +30,25 @@ const initialState: any = [
 
 const state: Map<string, number> = new Map(initialState);
 
+const sockets: any = [];
+
+function sendState() {
+  for (const socket of sockets) {
+    socket.send(JSON.stringify(Object.fromEntries(state.entries())));
+  }
+}
+
+function addWS(ws: any) {
+  sockets.push(ws);
+  sendState();
+}
+
+app.ws("/api/director", (ws, req) => {
+  addWS(ws);
+});
+
+app.get("/", (_req, res) => res.redirect("/players"));
+
 for (const player in Player) {
   app.get(`/api/${player}`, (_req, res) => {
     console.log("Requested state for player " + player + ". State is " + state.get(player));
@@ -42,6 +64,7 @@ for (const player in Player) {
 
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
+    sendState();
   });
 
   app.post(`/api/${player}/minus`, (_req, res) => {
@@ -52,6 +75,7 @@ for (const player in Player) {
       res.set("Content-Type", "text/html");
       res.send("" + 0);
       state.set(player, 0);
+      sendState();
       return;
     }
 
@@ -61,6 +85,7 @@ for (const player in Player) {
 
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
+    sendState();
   });
 
   app.post(`/api/${player}/plusTen`, (_req, res) => {
@@ -71,6 +96,7 @@ for (const player in Player) {
 
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
+    sendState();
   });
 
   app.post(`/api/${player}/minusTen`, (_req, res) => {
@@ -81,6 +107,7 @@ for (const player in Player) {
       res.set("Content-Type", "text/html");
       res.send("" + 0);
       state.set(player, 0);
+      sendState();
       return;
     }
 
@@ -90,8 +117,11 @@ for (const player in Player) {
 
     res.set("Content-Type", "text/html");
     res.send("" + state.get(player));
+    sendState();
   });
 }
 
 app.use("/players", express.static("players"));
+app.use("/director", express.static("director"));
+
 app.listen(8080);
