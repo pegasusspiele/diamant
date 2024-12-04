@@ -15,4 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("inc10").addEventListener("click", () => {
     fetch("/api/" + playerName + "/plusTen", { method: "POST" }).then(async (res) => (document.getElementById("score").innerText = await res.text()));
   });
+
+  document.getElementById("logo").addEventListener("click", () => {
+    fetch("/api/" + playerName).then(async (res) => (document.getElementById("score").innerText = await res.text()));
+  });
 });

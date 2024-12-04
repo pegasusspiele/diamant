@@ -18,7 +18,7 @@ enum Player {
 }
 
 const initialState: any = [
-  [Player.hannah, 3],
+  [Player.hannah, 0],
   [Player.esra, 0],
   [Player.max, 0],
   [Player.peter, 0],
@@ -48,9 +48,10 @@ for (const player in Player) {
     const currentState = state.get(player);
 
     // player state is bound to min zero
-    if (currentState && currentState <= 0) {
+    if (currentState! <= 0) {
       res.set("Content-Type", "text/html");
       res.send("" + 0);
+      state.set(player, 0);
       return;
     }
 
@@ -76,9 +77,10 @@ for (const player in Player) {
     const currentState = state.get(player);
 
     // player state is bound to min zero
-    if (currentState && currentState - 10 < 0) {
+    if (currentState! - 10 < 0) {
       res.set("Content-Type", "text/html");
       res.send("" + 0);
+      state.set(player, 0);
       return;
     }
 
