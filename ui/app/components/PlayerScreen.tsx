@@ -70,10 +70,6 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
           </tr>
         </tbody>
       </table>
-
-      <div id="credits">
-        Made with <span id="love">❤</span> by your colleagues
-      </div>
     </BaseLayout>
   );
 };
