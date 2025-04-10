@@ -22,7 +22,7 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
   }
 
   useEffect(() => {
-    fetch(encodeURI(`http://localhost:8000/player/${player.name}`), {
+    fetch(encodeURI(`/player/${player.name}`), {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -35,7 +35,7 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
   }, []);
 
   function update(delta: 1 | 10 | -1 | -10) {
-    fetch(encodeURI(`http://localhost:8000/player/${player.name}/diamonds?diamonds=${delta}`), {
+    fetch(encodeURI(`/player/${player.name}/diamonds?diamonds=${delta}`), {
       method: "PUT",
       headers: {
         accept: "application/json",
