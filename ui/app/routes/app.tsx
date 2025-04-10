@@ -6,23 +6,29 @@
 
 import { useState } from "react";
 import type { Player } from "~/@types/state";
-import { PlayerScreen } from "../PlayerScreen/PlayerScreen";
+import { BaseLayout } from "~/components/baselayout";
+import { PlayerScreen } from "../components/PlayerScreen";
 import type { Route } from "./+types/app";
 
 export function meta({}: Route.MetaArgs) {
-  return [{ title: "New React Router App" }, { name: "description", content: "Welcome to React Router!" }];
+  return [{ title: "CONspiracy" }, { name: "description", content: "Made with love at Pegasus Spiele HQ" }];
 }
 
 export default function App() {
-  const [player, setPlayer] = useState<Player>({
+  const nico: Player = {
     name: "Nico",
-    score: null,
-  });
+    score: 10,
+  };
+
+  const [player, setPlayer] = useState<Player | null>(nico);
+
+  if (!player) return <BaseLayout>HI</BaseLayout>;
 
   return (
     <PlayerScreen
       player={player}
-      setPlayer={setPlayer}
+      updateScore={(newScore: number) => setPlayer({ ...player, score: newScore })}
+      exit={() => setPlayer(null)}
     />
   );
 }

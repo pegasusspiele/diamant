@@ -4,25 +4,27 @@
  * Proprietary and confidential
  */
 
-import { useEffect, type Dispatch, type SetStateAction } from "react";
+import { useEffect } from "react";
 import type { Player } from "~/@types/state";
+import { BaseLayout } from "~/components/baselayout";
 
 interface PlayerScreenProps {
   player: Player;
-  setPlayer: Dispatch<SetStateAction<Player>>;
+  updateScore: (newScore: number) => void;
+  exit: () => void;
 }
 
-export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ player, setPlayer }) => {
+export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ player, updateScore, exit }) => {
   function updatePlayer(_newScore: string) {
     const newScore = Number(_newScore);
 
     if (typeof newScore !== "number") return console.error("newScore not number");
 
-    setPlayer({ ...player, score: newScore });
+    updateScore(newScore);
   }
 
   useEffect(() => {
-    fetch(encodeURI(`/player/${player.name}`), {
+    fetch(encodeURI(`http://localhost:8000/player/${player.name}`), {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -35,7 +37,7 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
   }, []);
 
   function update(delta: 1 | 10 | -1 | -10) {
-    fetch(encodeURI(`/player/${player.name}/diamonds?diamonds=${delta}`), {
+    fetch(encodeURI(`http://localhost:8000/player/${player.name}/diamonds?diamonds=${delta}`), {
       method: "PUT",
       headers: {
         accept: "application/json",
@@ -48,16 +50,7 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
   }
 
   return (
-    <div className="all">
-      <div id="logoContainer">
-        <img
-          id="logo"
-          src="logo.png"
-        />
-      </div>
-      <div id="playerNameContainer">
-        <div id="playerName">{player.name}</div>
-      </div>
+    <BaseLayout onLogoClick={() => exit()}>
       <table>
         <tbody>
           <tr>
@@ -81,6 +74,6 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
       <div id="credits">
         Made with <span id="love">❤</span> by your colleagues
       </div>
-    </div>
+    </BaseLayout>
   );
 };
