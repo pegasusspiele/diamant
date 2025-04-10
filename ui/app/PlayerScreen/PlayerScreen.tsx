@@ -52,7 +52,7 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
       <div id="logoContainer">
         <img
           id="logo"
-          src="image.png"
+          src="logo.png"
         />
       </div>
       <div id="playerNameContainer">
