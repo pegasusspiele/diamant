@@ -1,5 +1,6 @@
 from functools import wraps
 import json
+import os
 from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,6 +23,10 @@ app.add_middleware(
 
 player : dict[str, tuple[int, WebSocket]] = {}
 admin : WebSocket = None
+
+if not os.path.exists("state.json"):
+    with open("state.json", "w") as f:
+        json.dump({}, f)
 
 with open("state.json", "r") as f:
     state = json.load(f)
