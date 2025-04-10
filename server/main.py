@@ -70,16 +70,6 @@ async def create_player(name: str) -> None:
         json.dump(dict([(name, player[name][0]) for name in player]), f)
     await notify_admin()
 
-    if name not in player:
-        raise HTTPException(status_code=404)
-    if diamonds < 0:
-        raise HTTPException(status_code=400, detail="Diamonds must be positive")
-    player[name] = (player[name][0] + diamonds, player[name][1])
-    with open("state.json", "w") as f:
-        json.dump(dict([(name, player[name][0]) for name in player]), f)
-    await notify_admin()
-    return DiamondStateResponse(players = dict([(name, player[name][0]) for name in player]))
-
 @app.put("/player/{name}/diamonds", tags=["player"])
 async def change_diamonds(name: str, diamonds: int) -> int:
     if name not in player: 
