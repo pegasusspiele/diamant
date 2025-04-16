@@ -5,7 +5,6 @@
 # https://opensource.org/licenses/MIT.
 #
 
-import json
 from models.messages import Message
 from fastapi import WebSocket
 
