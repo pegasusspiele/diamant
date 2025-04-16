@@ -7,7 +7,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import player, admin, websocket
+from routers import player, admin, websocket, state
 
 app = FastAPI()
 app.add_middleware(
@@ -20,4 +20,5 @@ app.add_middleware(
 
 app.include_router(player.router, prefix="/api/player", tags=["player"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
+app.include_router(state.router, prefix="/api/state", tags=["state"])
 app.include_router(websocket.router, prefix="/api/ws", tags=["websocket"])

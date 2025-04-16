@@ -14,21 +14,9 @@ from util import StateMessage_of_GameState
 
 router = APIRouter()
 
-async def send_state_update():
+@router.get("/")
+async def resend_state():
     await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
     await ADMIN_WEBSOCKET_SERVICE.notify_all(
         Message(msg=StateMessage_of_GameState(GAME_STATE))
     )
-
-@router.get("/")
-def get_players() -> list[str]:
-    return GAME_STATE.get_player_names()
-
-@router.post("/{name}/diamonds")
-async def update_diamonds(name: str, diamonds: int) -> None:
-    if diamonds < 0:
-        GAME_STATE.remove_diamonds(name, abs(diamonds))
-    else:
-        GAME_STATE.add_diamonds(name, diamonds)
-
-    await send_state_update()

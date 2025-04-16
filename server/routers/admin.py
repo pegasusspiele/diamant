@@ -21,10 +21,6 @@ async def send_state_update():
         Message(msg=StateMessage_of_GameState(GAME_STATE))
     )
 
-@router.post("/trigger-reload")
-async def trigger_reload():
-    await send_state_update()
-
 @router.post("/player/{name}")
 async def create_player(name: str):
     success = GAME_STATE.add_player(name)
