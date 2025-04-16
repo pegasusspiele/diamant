@@ -47,7 +47,7 @@ class GameState:
 
     def reset_diamonds(self) -> None:
         """Reset the diamonds of all players to 0."""
-        for player in self.players:
+        for player in self._players:
             player.diamonds = 0
 
     def flush_redis(self) -> None:
@@ -62,7 +62,7 @@ class GameState:
         """Get a list of player names."""
         return [player.name for player in self._players]
 
-    def get_player_diamonds(self, name: str) -> int | ValueError:
+    def get_player_diamonds(self, name: str) -> int:
         """Get the number of diamonds for a player."""
         for player in self._players:
             if player.name == name:
@@ -70,7 +70,7 @@ class GameState:
 
         raise ValueError("Player not found")
 
-    def add_diamonds(self, name: str, amount: int) -> int | ValueError:
+    def add_diamonds(self, name: str, amount: int) -> int:
         """Add a diamond state to the game state."""
         for player in self._players:
             if player.name != name:
@@ -81,7 +81,7 @@ class GameState:
 
         raise ValueError("Player not found")
 
-    def remove_diamonds(self, name: str, amount: int) -> int | ValueError:
+    def remove_diamonds(self, name: str, amount: int) -> int:
         """Remove a diamond state from the game state."""
         for player in self._players:
             if player.name != name:
