@@ -10,6 +10,9 @@ class Player:
     def __init__(self, name: str, redis: Redis):
         self._name: str = name
         self._store: Redis = redis
+        
+        if self._store.get("PLAYER:{self._name}*") is None:
+            self.diamonds = 0
 
     @property
     def name(self) -> str:
@@ -26,4 +29,4 @@ class Player:
         self._store.set(f"PLAYER:{self._name}:diamonds", value)
 
     def delete(self) -> bool:
-        self._store.delete(f"PLAYER:{self._name}:*")
+        self._store.delete(f"PLAYER:{self._name}:diamonds")
