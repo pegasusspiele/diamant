@@ -12,14 +12,18 @@ class Player:
         self._store: Redis = redis
 
     @property
-    def diamonds(self) -> int | None:
-        res = self._store.get(f"{self._name}:diamonds")
-        res = int(res) if res else None
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def diamonds(self) -> int:
+        res = self._store.get(f"PLAYER:{self._name}:diamonds")
+        res = int(res) if res else 0
         return res
 
     @diamonds.setter
     def diamonds(self, value: int):
-        pass
+        self._store.set(f"PLAYER:{self._name}:diamonds", value)
 
     def delete(self) -> bool:
-        self._store.delete(f"{self._name}:diamonds")
+        self._store.delete(f"PLAYER:{self._name}:*")

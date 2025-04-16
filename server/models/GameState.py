@@ -4,7 +4,6 @@
 # Proprietary and confidential
 #
 
-from fastapi import WebSocket
 from models.Player import Player
 from redis import Redis
 
@@ -18,7 +17,7 @@ class GameState:
         ]
 
     # region ----- admin -----
-
+    
     def get_player_scores(self) -> dict:
         """Get the player state."""
         return {player.name: player.diamonds for player in self.players}
@@ -27,8 +26,8 @@ class GameState:
         """Add a player to the game state."""
 
         for player in self._players:
-            if player == name:
-                return ValueError("Player already exists")
+            if player.name == name:
+                raise ValueError("Player already exists")
 
         self._players.append(Player(name, self._redis))
 
@@ -76,7 +75,7 @@ class GameState:
         for player in self._players:
             if player.name != name:
                 continue
-
+            
             player.diamonds += amount
             return player.diamonds
 
@@ -96,3 +95,7 @@ class GameState:
         raise ValueError("Player not found")
 
     # endregion ----- player -----
+
+
+
+GAME_STATE = GameState()
