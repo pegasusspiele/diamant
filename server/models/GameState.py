@@ -18,9 +18,9 @@ class GameState:
 
     # region ----- admin -----
     
-    def get_player_scores(self) -> dict:
+    def get_player_scores(self) -> list[tuple[str, int]]:
         """Get the player state."""
-        return {player.name: player.diamonds for player in self.players}
+        return [(player.name, player.diamonds) for player in self._players]
 
     def add_player(self, name: str) -> None | ValueError:
         """Add a player to the game state."""

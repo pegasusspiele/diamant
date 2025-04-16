@@ -5,15 +5,18 @@
 #
 
 from fastapi import APIRouter
-
-from models.messages.ReloadMessage import ReloadMessage
-from models.messages.StateMessage import StateMessage
+from models.GameState import GAME_STATE
 from services.player_websocket_service import PLAYER_WEBSOCKET_SERVICE
+from services.admin_websocket_service import ADMIN_WEBSOCKET_SERVICE
 from models.messages.Message import Message
+from util import StateMessage_of_GameState
+from models.GameState import GAME_STATE
 
 router = APIRouter()
 
-@router.get("/")
-async def get_state():
-    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage()))
-    return {"message": "Admin endpoint"}
+@router.post("/trigger-reload")
+async def trigger_reload():
+    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
+    await ADMIN_WEBSOCKET_SERVICE.notify_all(
+        Message(msg=StateMessage_of_GameState(GAME_STATE))
+    )

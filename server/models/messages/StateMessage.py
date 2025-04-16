@@ -10,3 +10,6 @@ from models.PlayerDTO import PlayerDTO
 class StateMessage(BaseModel):
     StateMessage: str = Field(default="StateMessage")
     state: list[PlayerDTO] = Field(default=[])
+
+
+
