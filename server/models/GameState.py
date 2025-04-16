@@ -1,7 +1,8 @@
 #
-# Copyright (C) 2025 Pegasus Spiele Verlags- und Medienvertriebsgesellschaft mbH, all rights reserved.
-# Unauthorized copying of this file, via any medium is strictly prohibited
-# Proprietary and confidential
+# Copyright (C) 2025 Pegasus Spiele Verlags- und Medienvertriebsgesellschaft mbH
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
 #
 
 from models.Player import Player
@@ -22,22 +23,25 @@ class GameState:
         """Get the player state."""
         return [(player.name, player.diamonds) for player in self._players]
 
-    def add_player(self, name: str) -> None | ValueError:
+    def add_player(self, name: str) -> bool:
         """Add a player to the game state."""
 
         for player in self._players:
             if player.name == name:
-                raise ValueError("Player already exists")
+                return False
 
         self._players.append(Player(name, self._redis))
+        return True
 
-    def player_kick(self, name: str) -> None:
+    def player_kick(self, name: str) -> bool:
         """Kick a player from the game state."""
         for player in self._players:
             if player.name == name:
                 player.delete()
                 self._players.remove(player)
-                break
+                return True
+        
+        return False
 
     def player_remove_all(self) -> None:
         """Remove all players from the game state."""

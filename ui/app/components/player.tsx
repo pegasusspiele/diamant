@@ -1,20 +1,36 @@
 /*
- * Copyright (C) 2025 Pegasus Spiele Verlags- und Medienvertriebsgesellschaft mbH, all rights reserved.
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
+ * Copyright (C) 2025 Pegasus Spiele Verlags- und Medienvertriebsgesellschaft mbH
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
  */
 
 import { useEffect } from "react";
-import type { Player } from "~/@types/state";
+import useWebSocket from "react-use-websocket";
+import type { IPlayer } from "~/@types/state";
 import { BaseLayout } from "~/components/baselayout";
 
-interface PlayerScreenProps {
-  player: Player;
+interface PlayerProps {
+  player: IPlayer;
   updateScore: (newScore: number) => void;
   exit: () => void;
 }
 
-export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ player, updateScore, exit }) => {
+export const Player: React.FunctionComponent<PlayerProps> = ({ player, updateScore, exit }) => {
+  const { lastJsonMessage } = useWebSocket(`ws://localhost:8000/ws/player/${player.name}`);
+
+  useEffect(() => {
+    if (lastJsonMessage && lastJsonMessage !== null) {
+      console.log("MESSAGE RECEIVED");
+
+      if (Object.hasOwn(lastJsonMessage, "action") !== undefined && lastJsonMessage.action === "reset") {
+        updatePlayer("0");
+      }
+
+      return;
+    }
+  }, [lastJsonMessage]);
+
   function updatePlayer(_newScore: string) {
     const newScore = Number(_newScore);
 
@@ -51,6 +67,9 @@ export const PlayerScreen: React.FunctionComponent<PlayerScreenProps> = ({ playe
 
   return (
     <BaseLayout onLogoClick={() => exit()}>
+      <div id="playerNameContainer">
+        <div id="playerName">{player.name}</div>
+      </div>
       <table>
         <tbody>
           <tr>
