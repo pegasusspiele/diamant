@@ -50,9 +50,9 @@ async def reset_diamonds():
     GAME_STATE.reset_diamonds()
     await send_state_update()
 
-@router.post("/trigger-confetti/{intensity}")
+@router.post("/trigger-confetti")
 async def trigger_confetti(intensity: int):
-    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=ConfettiMessage(intensity=intensity)))
+    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=ConfettiMessage()))
 
 @router.post("/message")
 async def send_message(message: str):
