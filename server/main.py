@@ -13,10 +13,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import player, admin, websocket, state
 
-APP_MODE = os.environ.get("APP_MODE", "dev")
+APP_MODE = os.getenv("REDIS_HOST") or "dev"
 docs_url = None if APP_MODE == "production" else "/docs"
-redoc_url = None if APP_MODE == "production" else "/redoc"  
+redoc_url = None if APP_MODE == "production" else "/redoc"
 openapi_url = None if APP_MODE == "production" else "/openapi.json"
+
+print(f"APP_MODE: {APP_MODE}")
 
 app = FastAPI(docs_url=docs_url, redoc_url=redoc_url, openapi_url=openapi_url)
 app.add_middleware(
