@@ -77,7 +77,7 @@ services:
 networks:
   proxy:
   backend:
-    internal: true
+    external: true
 
 volumes:
   redis-data:
