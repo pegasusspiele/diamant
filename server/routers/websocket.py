@@ -43,9 +43,10 @@ async def websocket_endpoint(uuid: str, websocket: WebSocket):
                 print(e)
     except:
         print(f"player ({name}) websocket connection closed")
-        PLAYER_WEBSOCKET_SERVICE.unregister(name)
     finally:
         PLAYER_WEBSOCKET_SERVICE.unregister(name)
+        await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
+        await ADMIN_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
 
 @router.websocket("/admin/{uuid}")
 async def websocket_endpoint(uuid: str, websocket: WebSocket):
