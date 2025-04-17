@@ -43,6 +43,7 @@ async def websocket_endpoint(uuid: str, websocket: WebSocket):
                 print(e)
     except:
         print(f"player ({name}) websocket connection closed")
+        PLAYER_WEBSOCKET_SERVICE.unregister(name)
     finally:
         PLAYER_WEBSOCKET_SERVICE.unregister(name)
 
@@ -58,5 +59,6 @@ async def websocket_endpoint(uuid: str, websocket: WebSocket):
             await websocket.receive_text()
     except:
         print(f"admin {uuid} websocket connection closed")
+        ADMIN_WEBSOCKET_SERVICE.unregister(websocket)
     finally:
-       ADMIN_WEBSOCKET_SERVICE.unregister(websocket)
+        ADMIN_WEBSOCKET_SERVICE.unregister(websocket)
