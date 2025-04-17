@@ -32,6 +32,7 @@ async def websocket_endpoint(uuid: str, websocket: WebSocket):
             try:
                 msg = Message.model_validate(raw).msg
                 if isinstance(msg, RenameMessage):
+                    print(f"player ({name}) rename to {msg.name}")
                     PLAYER_WEBSOCKET_SERVICE.rename(name, msg.name)
                     name = msg.name
             except ValidationError :
@@ -41,8 +42,8 @@ async def websocket_endpoint(uuid: str, websocket: WebSocket):
     finally:
         PLAYER_WEBSOCKET_SERVICE.unregister(name)
 
-@router.websocket("/admin")
-async def websocket_endpoint(websocket: WebSocket):
+@router.websocket("/admin/{uuid}")
+async def websocket_endpoint(uuid: str, websocket: WebSocket):
     try:
         await websocket.accept()    
         ADMIN_WEBSOCKET_SERVICE.register(websocket)
@@ -52,6 +53,6 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             await websocket.receive_text()
     except:
-        print(f"admin websocket connection closed")
+        print(f"admin {uuid} websocket connection closed")
     finally:
        ADMIN_WEBSOCKET_SERVICE.unregister(websocket)
