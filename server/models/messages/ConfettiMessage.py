@@ -9,4 +9,3 @@ from pydantic import BaseModel, Field
 
 class ConfettiMessage(BaseModel):
     ConfettiMessage: str = Field(default="ConfettiMessage")
-    intensity: int = Field(default=1337)
