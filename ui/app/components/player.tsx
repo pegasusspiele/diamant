@@ -6,7 +6,6 @@
  */
 
 import type { IPlayer } from "~/@types/state";
-import { BaseLayout } from "~/components/baselayout";
 
 interface PlayerProps {
   player: IPlayer;
@@ -28,7 +27,7 @@ export const Player: React.FunctionComponent<PlayerProps> = ({ player, exit }) =
   }
 
   return (
-    <BaseLayout onLogoClick={() => exit()}>
+    <>
       <div id="playerNameContainer">
         <div id="playerName">{player.name}</div>
       </div>
@@ -51,6 +50,6 @@ export const Player: React.FunctionComponent<PlayerProps> = ({ player, exit }) =
           </tr>
         </tbody>
       </table>
-    </BaseLayout>
+    </>
   );
 };

@@ -18,6 +18,7 @@ export function meta({}: Route.MetaArgs) {
 export default function App() {
   const [state, setState] = useState<Map<IPlayer["name"], IPlayer>>(new Map());
   const [activePlayer, setActivePlayer] = useState<IPlayer["name"]>();
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const uuid = useId();
   const [ws, setWs] = useState<WebSocket>();
@@ -45,6 +46,14 @@ export default function App() {
         }
 
         setState(map);
+
+        return;
+      }
+
+      if (Object.keys(msg).includes("ConfettiMessage")) {
+        if (confettiActive) return;
+
+        setConfettiActive(true);
       }
     };
   }, [ws]);
@@ -66,14 +75,22 @@ export default function App() {
 
   if (activePlayer && state.get(activePlayer) !== undefined)
     return (
-      <Player
-        player={state.get(activePlayer)!}
-        exit={() => updatePlayer()}
-      />
+      <BaseLayout
+        confettiActive={confettiActive}
+        onConfettiComplete={() => setConfettiActive(false)}
+      >
+        <Player
+          player={state.get(activePlayer)!}
+          exit={() => updatePlayer()}
+        />
+      </BaseLayout>
     );
 
   return (
-    <BaseLayout>
+    <BaseLayout
+      confettiActive={confettiActive}
+      onConfettiComplete={() => setConfettiActive(false)}
+    >
       {[...state]
         .map((e) => e[1])
         .sort((a, b) => a.name.localeCompare(b.name))
