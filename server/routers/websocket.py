@@ -37,6 +37,8 @@ async def websocket_endpoint(uuid: str, websocket: WebSocket):
                     print(f"player ({name}) rename to {msg.name}")
                     PLAYER_WEBSOCKET_SERVICE.rename(name, msg.name)
                     name = msg.name
+                    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
+                    await ADMIN_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
             except ValidationError as e:
                 print(e)
     except:
