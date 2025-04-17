@@ -5,48 +5,25 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { useEffect } from "react";
 import type { IPlayer } from "~/@types/state";
 import { BaseLayout } from "~/components/baselayout";
 
 interface PlayerProps {
   player: IPlayer;
-  updateScore: (newScore: number) => void;
   exit: () => void;
 }
 
-export const Player: React.FunctionComponent<PlayerProps> = ({ player, updateScore, exit }) => {
-  function updatePlayer(_newScore: string) {
-    const newScore = Number(_newScore);
-
-    if (typeof newScore !== "number") return console.error("newScore not number");
-
-    updateScore(newScore);
-  }
-
-  useEffect(() => {
-    fetch(encodeURI(`http://localhost:8000/player/${player.name}`), {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-      },
-    }).then(async (response) => {
-      if (response.status !== 200) return console.error("EEEERRRORORR");
-
-      updatePlayer(await response.text());
-    });
-  }, []);
-
+export const Player: React.FunctionComponent<PlayerProps> = ({ player, exit }) => {
   function update(delta: 1 | 10 | -1 | -10) {
-    fetch(encodeURI(`http://localhost:8000/player/${player.name}/diamonds?diamonds=${delta}`), {
-      method: "PUT",
+    fetch(encodeURI(`http://localhost:8000/api/player/${player.name}/diamonds?diamonds=${delta}`), {
+      method: "POST",
       headers: {
         accept: "application/json",
       },
     }).then(async (response) => {
       if (response.status !== 200) return console.error("EEEERRRORORR");
 
-      updatePlayer(await response.text());
+      // updatePlayer(await response.text());
     });
   }
 

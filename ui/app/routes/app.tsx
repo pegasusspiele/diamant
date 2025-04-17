@@ -5,10 +5,10 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { useEffect, useState } from "react";
-import { v4 } from "uuid";
+import { useEffect, useId, useState } from "react";
 import type { IPlayer } from "~/@types/state";
 import { BaseLayout } from "~/components/baselayout";
+import { Player } from "~/components/player";
 import type { Route } from "./+types/app";
 
 export function meta({}: Route.MetaArgs) {
@@ -16,9 +16,10 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function App() {
-  const [availablePlayers, setAvailablePlayer] = useState<IPlayer[]>([]);
+  const [state, setState] = useState<Map<IPlayer["name"], IPlayer>>(new Map());
+  const [activePlayer, setActivePlayer] = useState<IPlayer["name"]>();
 
-  const uuid = v4();
+  const uuid = useId();
   const [ws, setWs] = useState<WebSocket>();
 
   useEffect(() => {
@@ -33,15 +34,26 @@ export default function App() {
 
       if (Object.keys(msg).includes("StateMessage")) {
         const typedMessage: IPlayer[] = msg.state;
-        console.log(typedMessage);
-        setAvailablePlayer(typedMessage);
+
+        if (typedMessage.length < 1) {
+          updatePlayer();
+        }
+
+        const map: Map<IPlayer["name"], IPlayer> = new Map();
+        for (const player of typedMessage) {
+          map.set(player.name, player);
+        }
+
+        setState(map);
       }
     };
   }, [ws]);
 
-  function updatePlayerName(name: string) {
+  function updatePlayer(playerName?: IPlayer["name"]) {
     if (!ws) return;
+    setActivePlayer(playerName);
 
+    const name = playerName || uuid;
     ws.send(
       JSON.stringify({
         msg: {
@@ -52,39 +64,28 @@ export default function App() {
     );
   }
 
+  if (activePlayer && state.get(activePlayer) !== undefined)
+    return (
+      <Player
+        player={state.get(activePlayer)!}
+        exit={() => updatePlayer()}
+      />
+    );
+
   return (
     <BaseLayout>
-      {availablePlayers
+      {[...state]
+        .map((e) => e[1])
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map(({ name }, idx) => (
+        .map((player, idx) => (
           <button
             key={idx}
-            onClick={() => updatePlayerName(name)}
+            onClick={() => updatePlayer(player.name)}
           >
-            {name}
+            {player.name}
           </button>
         ))}
+      <button onClick={() => updatePlayer()}>RESET</button>
     </BaseLayout>
   );
-
-  // const [player, setPlayer] = useState<IPlayer | null>(null);
-
-  // if (!player) return <Menu setPlayer={(player) => setPlayer(player)} />;
-
-  // return (
-  //   <Player
-  //     player={player}
-  //     updateScore={(newScore: number) => setPlayer({ ...player, score: newScore })}
-  //     exit={() => setPlayer(null)}
-  //   />
-  // );
 }
-
-/*
-{
-  msg: {
-    RenameMessage: "RenameMessage",
-    name: "new Name ..."
-  }
-}
-*/
