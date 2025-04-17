@@ -1,30 +1,21 @@
-version: '3.8'
+version: "3.8"
 
 services:
   traefik:
     image: traefik:v2.11
-    container_name: traefik
-    restart: always
     command:
-      # ---- STATIC CONFIG ----------------------------------------------------
-      - --log.level=INFO
-      - --api.dashboard=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      # --- Entrypoints
-      - --entrypoints.web.address=:80
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.websecure.http.tls=true
-      # --- ACME / Let's Encrypt
-      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-      - --certificatesresolvers.letsencrypt.acme.email=it@pegasus.de
-      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=it@pegasus.de"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
       - "443:443"
-      # - "8080:8080"  # optional: dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt:/letsencrypt
@@ -32,31 +23,29 @@ services:
       - proxy
       - backend
 
-  api-server:
+  # Set API_DOMAIN (e.g. api.example.com) in your environment or .env file so the Host rule resolves
+  api:
+    image: api:latest
     build:
       context: ./server
-    image: api-server:latest
-    container_name: api-server
-    restart: always
     depends_on:
       - redis
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_DB: 0
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.api.rule=Host(`api.diamant.conspiracy-con.de`)
-      - traefik.http.routers.api.entrypoints=websecure
-      - traefik.http.routers.api.tls.certresolver=letsencrypt
-      - traefik.http.services.api.loadbalancer.server.port=4000
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.diamant.conspiracy-con.de`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.services.api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.api.loadbalancer.server.port=4000"
     networks:
       - backend
 
   redis:
-    image: redis:7.2-alpine
-    container_name: redis
-    restart: always
+    image: redis:latest
     volumes:
       - redis-data:/data
     networks:
@@ -64,9 +53,7 @@ services:
 
 networks:
   proxy:
-    name: proxy
   backend:
-    name: backend
     internal: true
 
 volumes:
