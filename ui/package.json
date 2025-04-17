@@ -1,10 +1,10 @@
 {
-  "name": "",
+  "name": "diamant-ui",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
-    "dev": "react-router dev",
+    "build": "VITE_API_BASE=https://api.diamant.conspiracy-con.de react-router build",
+    "dev": "VITE_API_BASE=http://localhost:8000 react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },

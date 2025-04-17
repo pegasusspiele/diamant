@@ -9,6 +9,7 @@ import { useEffect, useId, useState } from "react";
 import type { IPlayer } from "~/@types/state";
 import { BaseLayout } from "~/components/baselayout";
 import { Player } from "~/components/player";
+import { API_BASE } from "~/constants/env";
 import type { Route } from "./+types/app";
 
 export function meta({}: Route.MetaArgs) {
@@ -24,7 +25,7 @@ export default function App() {
   const [ws, setWs] = useState<WebSocket>();
 
   useEffect(() => {
-    setWs(new WebSocket(`http://localhost:8000/api/ws/player/${uuid}`));
+    setWs(new WebSocket(`${API_BASE}/api/ws/player/${uuid}`));
   }, []);
 
   useEffect(() => {

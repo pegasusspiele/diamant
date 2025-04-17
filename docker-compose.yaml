@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2025 Pegasus Spiele Verlags- und Medienvertriebsgesellschaft mbH
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/MIT.
+#
+
 version: "3.8"
 
 services:
@@ -23,7 +30,6 @@ services:
       - proxy
       - backend
 
-  # Set API_DOMAIN (e.g. api.example.com) in your environment or .env file so the Host rule resolves
   api:
     image: api:latest
     build:
@@ -42,6 +48,22 @@ services:
       - "traefik.http.services.api.loadbalancer.passhostheader=true"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=4000"
+    networks:
+      - backend
+
+  ui:
+    image: ui:latest
+    build:
+      context: ./ui
+    depends_on:
+      - api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ui.rule=Host(`diamant.conspiracy-con.de`)"
+      - "traefik.http.routers.ui.entrypoints=websecure"
+      - "traefik.http.services.ui.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.ui.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ui.loadbalancer.server.port=3000"
     networks:
       - backend
 

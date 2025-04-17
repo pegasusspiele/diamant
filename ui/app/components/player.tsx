@@ -6,6 +6,7 @@
  */
 
 import type { IPlayer } from "~/@types/state";
+import { API_BASE } from "~/constants/env";
 
 interface PlayerProps {
   player: IPlayer;
@@ -14,7 +15,7 @@ interface PlayerProps {
 
 export const Player: React.FunctionComponent<PlayerProps> = ({ player, exit }) => {
   function update(delta: 1 | 10 | -1 | -10) {
-    fetch(encodeURI(`http://localhost:8000/api/player/${player.name}/diamonds?diamonds=${delta}`), {
+    fetch(encodeURI(`${API_BASE}/api/player/${player.name}/diamonds?diamonds=${delta}`), {
       method: "POST",
       headers: {
         accept: "application/json",
