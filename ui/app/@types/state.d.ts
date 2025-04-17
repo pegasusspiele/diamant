@@ -6,12 +6,7 @@
  */
 
 export type IPlayer = {
+  diamonds: number;
+  isAlive: boolean;
   name: string;
-  score: number | null;
-};
-
-export type IState = {
-  players: {
-    [name: string]: IPlayer;
-  };
 };

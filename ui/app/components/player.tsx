@@ -6,7 +6,6 @@
  */
 
 import { useEffect } from "react";
-import useWebSocket from "react-use-websocket";
 import type { IPlayer } from "~/@types/state";
 import { BaseLayout } from "~/components/baselayout";
 
@@ -17,20 +16,6 @@ interface PlayerProps {
 }
 
 export const Player: React.FunctionComponent<PlayerProps> = ({ player, updateScore, exit }) => {
-  const { lastJsonMessage } = useWebSocket(`ws://localhost:8000/ws/player/${player.name}`);
-
-  useEffect(() => {
-    if (lastJsonMessage && lastJsonMessage !== null) {
-      console.log("MESSAGE RECEIVED");
-
-      if (Object.hasOwn(lastJsonMessage, "action") !== undefined && lastJsonMessage.action === "reset") {
-        updatePlayer("0");
-      }
-
-      return;
-    }
-  }, [lastJsonMessage]);
-
   function updatePlayer(_newScore: string) {
     const newScore = Number(_newScore);
 
@@ -79,7 +64,7 @@ export const Player: React.FunctionComponent<PlayerProps> = ({ player, updateSco
                 <button onClick={() => update(-10)}>-10</button>
               </div>
             </td>
-            <td id="score">{player.score === null ? "#" : player.score}</td>
+            <td id="score">{player.diamonds === null ? "#" : player.diamonds}</td>
             <td>
               <div className="buttonContainer">
                 <button onClick={() => update(1)}>+1</button>

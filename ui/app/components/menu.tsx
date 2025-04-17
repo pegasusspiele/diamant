@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { IPlayer } from "~/@types/state";
 import { BaseLayout } from "~/components/baselayout";
 
@@ -15,26 +15,6 @@ interface MenuProps {
 
 export const Menu: React.FunctionComponent<MenuProps> = ({ setPlayer }) => {
   const [availablePlayers, setAvailablePlayer] = useState<IPlayer[]>([]);
-
-  useEffect(() => {
-    fetch(encodeURI(`http://localhost:8000/state`), {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-      },
-    }).then(async (response) => {
-      if (response.status !== 200) return console.error("EEEERRRORORR");
-
-      const responseBody = (await response.json()).players;
-
-      setAvailablePlayer(
-        Object.keys(responseBody).map((name) => ({
-          name,
-          score: responseBody[name],
-        })),
-      );
-    });
-  }, []);
 
   return (
     <BaseLayout>

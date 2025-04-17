@@ -5,10 +5,10 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { v4 } from "uuid";
 import type { IPlayer } from "~/@types/state";
-import { Menu } from "~/components/menu";
-import { Player } from "../components/player";
+import { BaseLayout } from "~/components/baselayout";
 import type { Route } from "./+types/app";
 
 export function meta({}: Route.MetaArgs) {
@@ -16,20 +16,75 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function App() {
-  const nico: IPlayer = {
-    name: "Nico",
-    score: 10,
-  };
+  const [availablePlayers, setAvailablePlayer] = useState<IPlayer[]>([]);
 
-  const [player, setPlayer] = useState<IPlayer | null>(null);
+  const uuid = v4();
+  const [ws, setWs] = useState<WebSocket>();
 
-  if (!player) return <Menu setPlayer={(player) => setPlayer(player)} />;
+  useEffect(() => {
+    setWs(new WebSocket(`http://localhost:8000/api/ws/player/${uuid}`));
+  }, []);
+
+  useEffect(() => {
+    if (!ws) return;
+
+    ws.onmessage = ({ data }) => {
+      const { msg } = JSON.parse(data);
+
+      if (Object.keys(msg).includes("StateMessage")) {
+        const typedMessage: IPlayer[] = msg.state;
+        console.log(typedMessage);
+        setAvailablePlayer(typedMessage);
+      }
+    };
+  }, [ws]);
+
+  function updatePlayerName(name: string) {
+    if (!ws) return;
+
+    ws.send(
+      JSON.stringify({
+        msg: {
+          RenameMessage: "RenameMessage",
+          name,
+        },
+      }),
+    );
+  }
 
   return (
-    <Player
-      player={player}
-      updateScore={(newScore: number) => setPlayer({ ...player, score: newScore })}
-      exit={() => setPlayer(null)}
-    />
+    <BaseLayout>
+      {availablePlayers
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(({ name }, idx) => (
+          <button
+            key={idx}
+            onClick={() => updatePlayerName(name)}
+          >
+            {name}
+          </button>
+        ))}
+    </BaseLayout>
   );
+
+  // const [player, setPlayer] = useState<IPlayer | null>(null);
+
+  // if (!player) return <Menu setPlayer={(player) => setPlayer(player)} />;
+
+  // return (
+  //   <Player
+  //     player={player}
+  //     updateScore={(newScore: number) => setPlayer({ ...player, score: newScore })}
+  //     exit={() => setPlayer(null)}
+  //   />
+  // );
 }
+
+/*
+{
+  msg: {
+    RenameMessage: "RenameMessage",
+    name: "new Name ..."
+  }
+}
+*/
