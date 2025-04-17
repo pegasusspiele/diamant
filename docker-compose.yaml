@@ -34,6 +34,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_DB=0
+      - APP_MODE=production
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`api.diamant.conspiracy-con.de`)"

@@ -5,6 +5,7 @@
 # https://opensource.org/licenses/MIT.
 #
 
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -12,7 +13,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import player, admin, websocket, state
 
-app = FastAPI()
+APP_MODE = os.environ.get("APP_MODE", "dev")
+docs_url = None if APP_MODE == "production" else "/docs"
+redoc_url = None if APP_MODE == "production" else "/redoc"  
+openapi_url = None if APP_MODE == "production" else "/openapi.json"
+
+app = FastAPI(docs_url=docs_url, redoc_url=redoc_url, openapi_url=openapi_url)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
