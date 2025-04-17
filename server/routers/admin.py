@@ -53,3 +53,10 @@ async def reset_diamonds():
 @router.post("/trigger-confetti/{intensity}")
 async def trigger_confetti(intensity: int):
     await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=ConfettiMessage(intensity=intensity)))
+
+@router.post("/message/{player}")
+async def send_message(player: str, message: str):
+    try:
+        await PLAYER_WEBSOCKET_SERVICE.notify(player, Message(msg=message))
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Player not found")

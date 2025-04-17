@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from models.messages.StateMessage import StateMessage
 from models.messages.RenameMessage import RenameMessage
 from models.messages.ConfettiMessage import ConfettiMessage
+from models.messages.AlertMessage import AlertMessage
 
 class Message(BaseModel):
-    msg: Union[StateMessage, RenameMessage, ConfettiMessage] = None
+    msg: Union[StateMessage, RenameMessage, ConfettiMessage, AlertMessage] = None

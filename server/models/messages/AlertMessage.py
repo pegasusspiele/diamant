@@ -7,6 +7,6 @@
 
 from pydantic import BaseModel, Field
 
-class ConfettiMessage(BaseModel):
-    ConfettiMessage: str = Field(default="ConfettiMessage")
-    intensity: int = Field(default=1337)
+class AlertMessage(BaseModel):
+    AlertMessage: str = Field(default="AlertMessage")
+    text: str = Field(default="Du Hannebambel!")

@@ -30,6 +30,11 @@ class PlayerWebsocketService:
     def is_alive(self, name: Message) -> bool:
         # Check if the socket is still connected
         return name in self._sockets
+    
+    async def notify(self, name: str, message: Message) -> None:
+        if name not in self._sockets:
+            raise ValueError(f"Socket with name {name} does not exist")
+        await self._sockets[name].send_json(message.dict())
 
     async def notify_all(self, message: str) -> None:
         for socket_name in self._sockets:
