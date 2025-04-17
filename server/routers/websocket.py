@@ -5,7 +5,6 @@
 # https://opensource.org/licenses/MIT.
 #
 
-import uuid
 from fastapi import APIRouter, WebSocket
 from pydantic import ValidationError
 from models.messages.RenameMessage import RenameMessage
@@ -17,12 +16,13 @@ from models.GameState import GAME_STATE
 
 router = APIRouter()
 
-@router.websocket("/player")
-async def websocket_endpoint(websocket: WebSocket):
+@router.websocket("/player/{uuid}")
+async def websocket_endpoint(uuid: str, websocket: WebSocket):
+    name = uuid
+    
     try:
         await websocket.accept()
-        name = uuid.uuid4()
-        PLAYER_WEBSOCKET_SERVICE.register(id, websocket)
+        PLAYER_WEBSOCKET_SERVICE.register(uuid, websocket)
         
         await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
         await ADMIN_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
