@@ -17,8 +17,14 @@ class PlayerWebsocketService:
             raise ValueError(f"Socket with name {name} already exists")
         self._sockets[name] = socket
 
+    def rename(self, old_name: str, new_name: str) -> None:
+        if old_name not in self._sockets:
+            raise ValueError(f"Socket with name {old_name} does not exist")
+        if new_name in self._sockets:
+            raise ValueError(f"Socket with name {new_name} already exists")
+        self._sockets[new_name] = self._sockets.pop(old_name)
+
     def unregister(self, name: str) -> None:
-        pass
         self._sockets.pop(name, None)
 
     def is_alive(self, name: Message) -> bool:

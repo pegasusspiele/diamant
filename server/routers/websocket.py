@@ -5,7 +5,10 @@
 # https://opensource.org/licenses/MIT.
 #
 
+import uuid
 from fastapi import APIRouter, WebSocket
+from pydantic import ValidationError
+from models.messages.RenameMessage import RenameMessage
 from services.admin_websocket_service import  ADMIN_WEBSOCKET_SERVICE
 from services.player_websocket_service import PLAYER_WEBSOCKET_SERVICE
 from models.messages.Message import Message
@@ -14,22 +17,29 @@ from models.GameState import GAME_STATE
 
 router = APIRouter()
 
-@router.websocket("/player/{name}")
-async def websocket_endpoint(name: str, websocket: WebSocket):
+@router.websocket("/player")
+async def websocket_endpoint(websocket: WebSocket):
     try:
         await websocket.accept()
-        PLAYER_WEBSOCKET_SERVICE.register(name, websocket)
+        name = uuid.uuid4()
+        PLAYER_WEBSOCKET_SERVICE.register(id, websocket)
         
         await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
         await ADMIN_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
         
         while True:
-            await websocket.receive_text()
+            raw = await websocket.receive_text()
+            try:
+                msg = Message.model_validate(raw).msg
+                if isinstance(msg, RenameMessage):
+                    PLAYER_WEBSOCKET_SERVICE.rename(name, msg.name)
+                    name = msg.name
+            except ValidationError :
+                pass
     except:
         print(f"player ({name}) websocket connection closed")
     finally:
         PLAYER_WEBSOCKET_SERVICE.unregister(name)
-
 
 @router.websocket("/admin")
 async def websocket_endpoint(websocket: WebSocket):
