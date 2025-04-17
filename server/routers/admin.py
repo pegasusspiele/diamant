@@ -8,6 +8,7 @@
 from fastapi import APIRouter, HTTPException
 from models.GameState import GAME_STATE
 from models.messages.ConfettiMessage import ConfettiMessage
+from models.messages.AlertMessage import AlertMessage
 from services.player_websocket_service import PLAYER_WEBSOCKET_SERVICE
 from services.admin_websocket_service import ADMIN_WEBSOCKET_SERVICE
 from models.messages.Message import Message
@@ -56,11 +57,11 @@ async def trigger_confetti():
 
 @router.post("/message")
 async def send_message(message: str):
-    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=message))
+    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=AlertMessage(text=message)))
 
 @router.post("/message/{player}")
 async def send_message(player: str, message: str):
     try:
-        await PLAYER_WEBSOCKET_SERVICE.notify(player, Message(msg=message))
+        await PLAYER_WEBSOCKET_SERVICE.notify(player, Message(msg=AlertMessage(text=message)))
     except ValueError:
         raise HTTPException(status_code=404, detail="Player not found")
