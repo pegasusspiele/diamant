@@ -13,6 +13,7 @@ from services.player_websocket_service import PLAYER_WEBSOCKET_SERVICE
 from models.messages.Message import Message
 from util import StateMessage_of_GameState
 from models.GameState import GAME_STATE
+import json
 
 router = APIRouter()
 
@@ -30,13 +31,14 @@ async def websocket_endpoint(uuid: str, websocket: WebSocket):
         while True:
             raw = await websocket.receive_text()
             try:
-                msg = Message.model_validate(raw).msg
+                
+                msg = Message.model_validate(json.loads(raw)).msg
                 if isinstance(msg, RenameMessage):
                     print(f"player ({name}) rename to {msg.name}")
                     PLAYER_WEBSOCKET_SERVICE.rename(name, msg.name)
                     name = msg.name
-            except ValidationError :
-                pass
+            except ValidationError as e:
+                print(e)
     except:
         print(f"player ({name}) websocket connection closed")
     finally:

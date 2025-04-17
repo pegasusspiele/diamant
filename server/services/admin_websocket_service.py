@@ -20,6 +20,9 @@ class AdminWebsocketService:
 
     async def notify_all(self, message: Message) -> None:
         for socket in self._sockets:
-            await socket.send_json(message)
+            try:
+                await socket.send_json(message.dict())
+            except:
+                pass
 
 ADMIN_WEBSOCKET_SERVICE = AdminWebsocketService()
