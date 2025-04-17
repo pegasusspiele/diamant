@@ -8,6 +8,9 @@
 from fastapi import APIRouter, WebSocket
 from services.admin_websocket_service import  ADMIN_WEBSOCKET_SERVICE
 from services.player_websocket_service import PLAYER_WEBSOCKET_SERVICE
+from models.messages.Message import Message
+from util import StateMessage_of_GameState
+from models.GameState import GAME_STATE
 
 router = APIRouter()
 
@@ -16,7 +19,10 @@ async def websocket_endpoint(name: str, websocket: WebSocket):
     try:
         await websocket.accept()
         PLAYER_WEBSOCKET_SERVICE.register(name, websocket)
-
+        
+        await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
+        await ADMIN_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
+        
         while True:
             await websocket.receive_text()
     except:
@@ -30,6 +36,8 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         await websocket.accept()    
         ADMIN_WEBSOCKET_SERVICE.register(websocket)
+
+        await ADMIN_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
     
         while True:
             await websocket.receive_text()

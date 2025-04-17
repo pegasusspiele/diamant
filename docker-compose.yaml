@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.11
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=it@pegasus.de"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+    networks:
+      - proxy
+      - backend
+
+  # Set API_DOMAIN (e.g. api.example.com) in your environment or .env file so the Host rule resolves
+  api-server:
+    image: api-server:latest
+    build:
+      context: ./server
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.diamant.conspiracy-con.de`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.services.api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.api.loadbalancer.server.port=4000"
+    networks:
+      - backend
+
+  redis:
+    image: redis:latest
+    command: ["redis-server"]
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend
+
+networks:
+  proxy:
+  backend:
+    internal: true
+
+volumes:
+  redis-data:
+  letsencrypt:

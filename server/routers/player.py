@@ -5,7 +5,7 @@
 # https://opensource.org/licenses/MIT.
 #
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from models.GameState import GAME_STATE
 from models.messages.Message import Message
 from services.admin_websocket_service import ADMIN_WEBSOCKET_SERVICE
@@ -26,9 +26,12 @@ def get_players() -> list[str]:
 
 @router.post("/{name}/diamonds")
 async def update_diamonds(name: str, diamonds: int) -> None:
-    if diamonds < 0:
-        GAME_STATE.remove_diamonds(name, abs(diamonds))
-    else:
-        GAME_STATE.add_diamonds(name, diamonds)
+    try:
+        if diamonds < 0:
+            GAME_STATE.remove_diamonds(name, abs(diamonds))
+        else:
+            GAME_STATE.add_diamonds(name, diamonds)
+    except ValueError:
+        raise HTTPException(status_code=404)
 
     await send_state_update()

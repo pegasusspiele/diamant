@@ -15,7 +15,7 @@ from util import StateMessage_of_GameState
 router = APIRouter()
 
 @router.get("/")
-async def resend_state():
+async def resend_state() -> None:
     await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=StateMessage_of_GameState(GAME_STATE)))
     await ADMIN_WEBSOCKET_SERVICE.notify_all(
         Message(msg=StateMessage_of_GameState(GAME_STATE))

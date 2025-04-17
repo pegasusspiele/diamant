@@ -5,12 +5,13 @@
 # https://opensource.org/licenses/MIT.
 #
 
+import os
 from models.Player import Player
 from redis import Redis
 
 class GameState:
     def __init__(self):
-        self._redis = Redis(host="127.0.0.1", port=6379, db=0)
+        self._redis = Redis(host=os.getenv("REDIS_HOST"), port=os.getenv("REDIS_PORT"), db=os.getenv("REDIS_DB"))
 
         player_names = [str(key).split(":")[1] for key in self._redis.keys("PLAYER:*")]
         self._players: list[Player] = [
