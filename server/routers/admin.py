@@ -7,6 +7,7 @@
 
 from fastapi import APIRouter, HTTPException
 from models.GameState import GAME_STATE
+from models.messages.ConfettiMessage import ConfettiMessage
 from services.player_websocket_service import PLAYER_WEBSOCKET_SERVICE
 from services.admin_websocket_service import ADMIN_WEBSOCKET_SERVICE
 from models.messages.Message import Message
@@ -48,3 +49,7 @@ async def delete_all_players():
 async def reset_diamonds():
     GAME_STATE.reset_diamonds()
     await send_state_update()
+
+@router.post("/trigger-confetti/{intensity}")
+async def trigger_confetti(intensity: int):
+    await PLAYER_WEBSOCKET_SERVICE.notify_all(Message(msg=ConfettiMessage(intensity=intensity)))

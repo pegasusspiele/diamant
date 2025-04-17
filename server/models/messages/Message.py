@@ -9,6 +9,7 @@ from typing import Union
 from pydantic import BaseModel
 from models.messages.StateMessage import StateMessage
 from models.messages.RenameMessage import RenameMessage
+from models.messages.ConfettiMessage import ConfettiMessage
 
 class Message(BaseModel):
-    msg: Union[StateMessage, RenameMessage] = None
+    msg: Union[StateMessage, RenameMessage, ConfettiMessage] = None
