@@ -78,6 +78,7 @@ export default function App() {
       <BaseLayout
         confettiActive={confettiActive}
         onConfettiComplete={() => setConfettiActive(false)}
+        onLogoClick={() => updatePlayer()}
       >
         <Player
           player={state.get(activePlayer)!}
