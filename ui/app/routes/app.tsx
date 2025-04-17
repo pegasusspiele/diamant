@@ -5,7 +5,8 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
+import { v4 } from "uuid";
 import type { IPlayer } from "~/@types/state";
 import { BaseLayout } from "~/components/baselayout";
 import { Player } from "~/components/player";
@@ -21,11 +22,15 @@ export default function App() {
   const [activePlayer, setActivePlayer] = useState<IPlayer["name"]>();
   const [confettiActive, setConfettiActive] = useState(false);
 
-  const uuid = useId();
+  const uuid = v4();
   const [ws, setWs] = useState<WebSocket>();
 
-  useEffect(() => {
+  function openNewSocket() {
     setWs(new WebSocket(`${API_BASE}/api/ws/player/${uuid}`));
+  }
+
+  useEffect(() => {
+    openNewSocket();
   }, []);
 
   useEffect(() => {
@@ -57,6 +62,8 @@ export default function App() {
         setConfettiActive(true);
       }
     };
+
+    ws.onclose = () => setWs(undefined);
   }, [ws]);
 
   function updatePlayer(playerName?: IPlayer["name"]) {
@@ -73,6 +80,13 @@ export default function App() {
       }),
     );
   }
+
+  if (!ws)
+    return (
+      <BaseLayout>
+        <button onClick={() => openNewSocket()}>RELOAD</button>
+      </BaseLayout>
+    );
 
   if (activePlayer && state.get(activePlayer) !== undefined)
     return (
@@ -99,12 +113,13 @@ export default function App() {
         .map((player, idx) => (
           <button
             key={idx}
+            className={player.isAlive ? "disabled" : undefined}
+            disabled={player.isAlive}
             onClick={() => updatePlayer(player.name)}
           >
             {player.name}
           </button>
         ))}
-      <button onClick={() => updatePlayer()}>RESET</button>
     </BaseLayout>
   );
 }

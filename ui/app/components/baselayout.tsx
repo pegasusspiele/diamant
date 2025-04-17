@@ -11,11 +11,11 @@ import Confetti from "react-confetti";
 interface BaseLayoutProps {
   children: React.ReactNode;
   onLogoClick?: () => void;
-  confettiActive: Boolean;
+  confettiActive?: Boolean;
   onConfettiComplete?: () => void;
 }
 
-export const BaseLayout: React.FunctionComponent<BaseLayoutProps> = ({ children, onLogoClick, confettiActive, onConfettiComplete }) => (
+export const BaseLayout: React.FunctionComponent<BaseLayoutProps> = ({ children, onLogoClick, confettiActive = false, onConfettiComplete }) => (
   <div className="all">
     <div
       id="logoContainer"
